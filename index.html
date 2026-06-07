@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GameZone</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- LOGIN VIEW -->
+<section id="view-login" class="view">
+  <div class="auth-card">
+    <div class="brand">
+      <span class="brand-mark">GZ</span>
+      <h1>GameZone</h1>
+    </div>
+    <p class="auth-sub">Entra con tu nombre para jugar y compartir.</p>
+
+    <form id="form-login" class="auth-form">
+      <label>Tu nombre
+        <input type="text" name="nick" required maxlength="20" autocomplete="off" placeholder="ej. mario_99" />
+      </label>
+      <button type="submit" class="btn primary">Entrar</button>
+      <p id="login-error" class="error hidden"></p>
+      <p class="hint">Cada nombre es único en este dispositivo.</p>
+    </form>
+  </div>
+</section>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+  <aside class="sidebar">
+    <div class="brand small">
+      <span class="brand-mark">GZ</span>
+      <h2>GameZone</h2>
+    </div>
+    <nav id="nav">
+      <a href="#dashboard" class="nav-link" data-route="dashboard" data-roles="user,pro,admin">📊 Dashboard</a>
+      <a href="#library" class="nav-link" data-route="library" data-roles="user,pro,admin">🎮 Mi Biblioteca</a>
+      <a href="#explore" class="nav-link" data-route="explore" data-roles="user,pro,admin">🌐 Explorar</a>
+      <a href="#upload" class="nav-link" data-route="upload" data-roles="user,pro,admin">⬆️ Subir Juego</a>
+      <a href="#admin" class="nav-link nav-admin" data-route="admin" data-roles="pro,admin">🛡️ Panel Admin</a>
+    </nav>
+    <div class="user-box">
+      <div class="avatar" id="user-avatar">?</div>
+      <div>
+        <div id="user-name" class="user-name">—</div>
+        <span id="user-role" class="role-badge"></span>
+        <button id="btn-logout" class="link">Cerrar sesión</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <h1 id="page-title">Dashboard</h1>
+      <input id="search" type="search" placeholder="Buscar juegos..." />
+    </header>
+
+    <!-- DASHBOARD -->
+    <section id="route-dashboard" class="route">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Mis juegos</span>
+          <span class="stat-value" id="stat-library">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Juegos publicados</span>
+          <span class="stat-value" id="stat-published">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Pendientes</span>
+          <span class="stat-value" id="stat-pending">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Comunidad</span>
+          <span class="stat-value" id="stat-users">0</span>
+        </div>
+      </div>
+
+      <h2>Destacados</h2>
+      <div id="featured-grid" class="game-grid"></div>
+
+      <h2>Recientes</h2>
+      <div id="recent-grid" class="game-grid"></div>
+    </section>
+
+    <!-- LIBRARY -->
+    <section id="route-library" class="route hidden">
+      <p class="muted">Los juegos que has subido. Cada uno necesita aprobación de un moderador para publicarse.</p>
+      <div id="library-grid" class="game-grid"></div>
+    </section>
+
+    <!-- EXPLORE -->
+    <section id="route-explore" class="route hidden">
+      <div class="filter-bar">
+        <button class="chip active" data-cat="all">Todos</button>
+        <button class="chip" data-cat="arcade">Arcade</button>
+        <button class="chip" data-cat="puzzle">Puzzle</button>
+        <button class="chip" data-cat="accion">Acción</button>
+        <button class="chip" data-cat="estrategia">Estrategia</button>
+        <button class="chip" data-cat="otros">Otros</button>
+      </div>
+      <div id="explore-grid" class="game-grid"></div>
+    </section>
+
+    <!-- UPLOAD -->
+    <section id="route-upload" class="route hidden">
+      <div class="form-card">
+        <h2>Subir un nuevo juego</h2>
+        <form id="form-upload">
+          <label>Título *
+            <input type="text" name="title" required maxlength="60" />
+          </label>
+          <label>Descripción
+            <textarea name="description" rows="3" maxlength="280" placeholder="¿De qué trata?"></textarea>
+          </label>
+          <div class="grid-2">
+            <label>Categoría
+              <select name="category">
+                <option value="arcade">Arcade</option>
+                <option value="puzzle">Puzzle</option>
+                <option value="accion">Acción</option>
+                <option value="estrategia">Estrategia</option>
+                <option value="otros">Otros</option>
+              </select>
+            </label>
+            <label>Portada (imagen) *
+              <input type="file" name="cover" accept="image/*" required />
+            </label>
+          </div>
+          <div id="cover-preview-wrap" class="cover-preview-wrap hidden">
+            <img id="cover-preview" class="cover-preview" alt="Vista previa de la portada" />
+          </div>
+          <label>URL del juego (opcional)
+            <input type="url" name="url" placeholder="https://... (se abrirá en iframe)" />
+          </label>
+          <p class="hint">Si dejas la URL vacía, al jugar podrás elegir uno de los mini-juegos integrados.</p>
+          <div class="actions">
+            <button type="submit" class="btn primary">Enviar para aprobación</button>
+            <button type="reset" class="btn ghost">Limpiar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- PANEL ADMIN (pro + admin) -->
+    <section id="route-admin" class="route hidden">
+      <!-- Parte 1: Aprobar / Rechazar (pro + admin) -->
+      <div class="admin-block" data-roles="pro,admin">
+        <h2>Aprobar o rechazar juegos</h2>
+        <p class="muted">Prueba cada juego pendiente y decide si se publica. Acepta para que aparezca en la comunidad, o rechaza para ocultarlo.</p>
+        <div id="moderation-list" class="review-list"></div>
+      </div>
+
+      <!-- Parte 2: Usuarios (solo admin) -->
+      <div class="admin-block" data-roles="admin">
+        <h2>Usuarios</h2>
+        <p class="muted">Borra usuarios, o hazlos Pro para que puedan aprobar y rechazar juegos.</p>
+        <input id="user-search" type="search" placeholder="Buscar usuario por nombre..." class="user-search" />
+        <ul id="users-list" class="admin-list"></ul>
+      </div>
+
+      <!-- Parte 3: Borrar / Volver a poner juegos (solo admin) -->
+      <div class="admin-block" data-roles="admin">
+        <h2>Borrar o volver a poner juegos</h2>
+        <p class="muted">Ver, jugar, borrar o volver a publicar cualquier juego.</p>
+        <div id="games-list" class="review-list"></div>
+      </div>
+
+      <!-- Zona peligrosa (solo admin) -->
+      <div class="admin-block form-card danger" data-roles="admin">
+        <h3>Zona peligrosa</h3>
+        <button id="btn-reset" class="btn danger">Borrar todos los datos</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- PLAYER MODAL -->
+<div id="player" class="modal hidden">
+  <div class="modal-content">
+    <header class="modal-head">
+      <h2 id="player-title">Jugando</h2>
+      <div class="modal-head-actions">
+        <button id="player-fs" class="btn ghost">⛶ Pantalla completa</button>
+        <button id="player-close" class="btn ghost">✕ Cerrar</button>
+      </div>
+    </header>
+    <div id="player-body" class="player-body"></div>
+  </div>
+</div>
+
+<!-- BUILT-IN GAME PICKER MODAL -->
+<div id="picker" class="modal hidden">
+  <div class="modal-content small">
+    <header class="modal-head">
+      <h2>Elige un mini-juego</h2>
+      <button id="picker-close" class="btn ghost">✕</button>
+    </header>
+    <div class="picker-grid">
+      <button class="picker-card" data-game="snake">🐍<span>Snake</span></button>
+      <button class="picker-card" data-game="tictactoe">⭕<span>Tic Tac Toe</span></button>
+      <button class="picker-card" data-game="memory">🧠<span>Memoria</span></button>
+      <button class="picker-card" data-game="clicker">👆<span>Clicker</span></button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="games.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
