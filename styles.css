@@ -1,14 +1,14 @@
 :root {
-  --bg: #0b0b14;
-  --bg-2: #14142a;
-  --surface: #1a1a32;
-  --surface-2: #232342;
-  --border: #2c2c52;
-  --text: #e9e9f5;
-  --muted: #8a8ab0;
+  --bg: #ffffff;
+  --bg-2: #f1f1f8;
+  --surface: #ffffff;
+  --surface-2: #ececf6;
+  --border: #e2e2ec;
+  --text: #1b1b2b;
+  --muted: #6c6c84;
   --primary: #7c5cff;
   --primary-2: #5b3ee0;
-  --accent: #00e0c7;
+  --accent: #00b8a4;
   --danger: #ff4d6d;
   --warning: #ffb84d;
 }
@@ -17,7 +17,7 @@
 html, body { height: 100%; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: radial-gradient(circle at top left, #1a1640 0%, var(--bg) 60%);
+  background: radial-gradient(circle at top left, #f4f1ff 0%, #ffffff 60%);
   color: var(--text);
   min-height: 100vh;
 }
@@ -39,7 +39,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  box-shadow: 0 12px 40px rgba(30,20,80,.12);
 }
 .brand {
   display: flex;
