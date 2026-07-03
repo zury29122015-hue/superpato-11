@@ -5,6 +5,7 @@
 // ============================================================
 
 const ADMIN_NICK = 'pato';
+const ADMIN_PASSWORD = 'pato2026';
 
 const DB = {
   get users() { return JSON.parse(localStorage.getItem('gz_users') || '[]'); },
@@ -25,14 +26,15 @@ function currentUser() {
   return DB.users.find(u => u.id === s.userId) || null;
 }
 
-function loginByNick(rawNick) {
+function loginByNick(rawNick, password = '') {
   const nick = rawNick.trim();
   if (!nick) throw new Error('Escribe un nombre.');
 
   const users = DB.users;
 
-  // Admin: el nombre "pato" siempre entra como admin (infinitas veces).
+  // Admin: el nombre "pato" pide contraseña y entra como admin (infinitas veces).
   if (nick.toLowerCase() === ADMIN_NICK) {
+    if (password !== ADMIN_PASSWORD) throw new Error('Contraseña incorrecta.');
     let admin = users.find(u => u.username.toLowerCase() === ADMIN_NICK);
     if (!admin) {
       admin = { id: 'u_admin', username: 'pato', role: 'admin', createdAt: Date.now() };
@@ -68,6 +70,7 @@ function showLogin() {
   document.getElementById('app').classList.add('hidden');
   const f = document.getElementById('form-login');
   if (f) f.reset();
+  document.getElementById('admin-pass-wrap')?.classList.add('hidden');
 }
 
 function defaultRouteFor(role) {
@@ -423,13 +426,21 @@ function toast(msg) {
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Login
+  // Login — muestra el campo de contraseña solo si el nombre es "pato"
+  const nickInput = document.querySelector('#form-login input[name=nick]');
+  const passWrap = document.getElementById('admin-pass-wrap');
+  nickInput.oninput = () => {
+    const isAdmin = nickInput.value.trim().toLowerCase() === ADMIN_NICK;
+    passWrap.classList.toggle('hidden', !isAdmin);
+    if (!isAdmin) passWrap.querySelector('input').value = '';
+  };
+
   document.getElementById('form-login').onsubmit = (e) => {
     e.preventDefault();
     const err = document.getElementById('login-error');
     err.classList.add('hidden');
     try {
-      loginByNick(e.target.nick.value);
+      loginByNick(e.target.nick.value, e.target.password ? e.target.password.value : '');
       showApp();
       toast('¡Bienvenido!');
     } catch (ex) {
